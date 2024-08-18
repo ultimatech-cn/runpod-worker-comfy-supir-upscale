@@ -24,6 +24,10 @@ RUN git clone https://github.com/comfyanonymous/ComfyUI.git /comfyui
 # Change working directory to ComfyUI
 WORKDIR /comfyui
 
+# Download SUPIR node
+RUN git clone https://github.com/kijai/ComfyUI-SUPIR
+RUN git clone https://github.com/kijai/ComfyUI-KJNodes
+
 # Install ComfyUI dependencies
 RUN pip3 install --upgrade --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121 \
     && pip3 install --upgrade -r requirements.txt
@@ -58,6 +62,9 @@ RUN if [ "$MODEL_TYPE" = "sdxl" ]; then \
     elif [ "$MODEL_TYPE" = "sd3" ]; then \
       wget --header="Authorization: Bearer ${HUGGINGFACE_ACCESS_TOKEN}" -O models/checkpoints/sd3_medium_incl_clips_t5xxlfp8.safetensors https://huggingface.co/stabilityai/stable-diffusion-3-medium/resolve/main/sd3_medium_incl_clips_t5xxlfp8.safetensors; \
     fi
+    
+RUN wget -O models/checkpoints/Juggernaut-XL_v9_RunDiffusionPhoto_v2.safetensors https://huggingface.co/RunDiffusion/Juggernaut-XL-v9/resolve/main/Juggernaut-XL_v9_RunDiffusionPhoto_v2.safetensors
+RUN wget -O models/checkpoints/SUPIR-v0Q.ckpt https://huggingface.co/camenduru/SUPIR/blob/main/SUPIR-v0Q.ckpt
 
 # Stage 3: Final image
 FROM base as final
